@@ -5,20 +5,21 @@ use futures_util::{Stream, pin_mut};
 
 use crate::structs::{
     error::OllamaError,
-    request::{ChatMessage, OllamaRequest},
-    response::ResponseStream,
+    request::{ChatMessage, OllamaRequest, OutputFormat},
+    response::ResponseStreamToken,
 };
 
-use super::http::check_url;
+use super::http::{check_url, send_streaming_req};
 
 #[derive(Debug)]
 pub struct Ollama {
     pub url: String,
 }
 
-/// A stream of `ChatMessageResponse` objects
-pub type ChatMessageResponseStream =
-    std::pin::Pin<Box<dyn tokio_stream::Stream<Item = Result<ResponseStream, ()>> + Send>>;
+/// A stream of `ResponseStreamToken` objects
+pub type ChatMessageResponseStreamToken = std::pin::Pin<
+    Box<dyn tokio_stream::Stream<Item = Result<ResponseStreamToken, OllamaError>> + Send>,
+>;
 
 impl Ollama {
     pub async fn new(url: &str) -> Result<Ollama, OllamaError> {
@@ -33,45 +34,60 @@ impl Ollama {
         &self,
 
         model: &str,
-        prompt: &str,
+        history: Vec<ChatMessage>,
         think: bool,
-    ) -> ChatMessageResponseStream {
-        let client = reqwest::Client::new();
-
+    ) -> Result<ChatMessageResponseStreamToken, OllamaError> {
         let request = OllamaRequest {
             model: model.to_string(),
-            messages: Some(vec![ChatMessage::new(
-                crate::structs::request::ChatRole::User,
-                prompt,
-            )]),
+            messages: Some(history),
             prompt: None,
             stream: true,
-            think: think,
+            think,
+            ..Default::default()
+        };
+        send_streaming_req(&format!("{}/api/chat", self.url), request).await
+    }
+    pub async fn generate_stream(
+        &self,
+
+        model: &str,
+        prompt: &str,
+        system: &str,
+        think: bool,
+    ) -> Result<ChatMessageResponseStreamToken, OllamaError> {
+        let request = OllamaRequest {
+            model: model.to_string(),
+
+            prompt: Some(prompt.to_string()),
+            system: Some(system.to_string()),
+            stream: true,
+            think,
+            ..Default::default()
         };
 
-        let mut response = client
-            .post(format!("{}/api/chat", self.url))
-            .body(serde_json::to_string(&request).unwrap())
-            .send()
-            .await
-            .unwrap();
+        send_streaming_req(&format!("{}/api/generate", self.url), request).await
+    }
 
-        let s = stream! {
-               while let Some(chunk) = response.chunk().await.unwrap() {
+    pub async fn generate_stream_structure(
+        &self,
 
+        model: &str,
+        prompt: &str,
+        system: &str,
 
-               let json_res = serde_json::from_slice::<ResponseStream>(chunk.iter().as_slice());
-
-
-                match json_res {
-                   Ok(json) => {
-                       yield Ok(json);
-                   },
-                   Err(e) => {println!("{:?}",e)}
-               }
-           }
+        think: bool,
+        output_format: OutputFormat,
+    ) -> Result<ChatMessageResponseStreamToken, OllamaError> {
+        let request = OllamaRequest {
+            model: model.to_string(),
+            system: Some(system.to_string()),
+            prompt: Some(prompt.to_string()),
+            stream: true,
+            format: Some(output_format),
+            think,
+            ..Default::default()
         };
 
-        Box::pin(s)
+        send_streaming_req(&format!("{}/api/generate", self.url), request).await
     }
 }
