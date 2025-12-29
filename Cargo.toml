@@ -1,5 +1,7 @@
 [package]
 name = "ollamars"
+description = "Simple ollama sdk using async rust."
+repository = "https://github.com/Kartofi/ollamars"
 version = "0.1.0"
 edition = "2024"
 

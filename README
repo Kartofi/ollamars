@@ -1,4 +1,4 @@
-Simple ollama sdk for rust.
+Simple ollama sdk for rust async.
 
 See the src/main.rs for example usage.
 
