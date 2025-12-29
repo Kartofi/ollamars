@@ -1,0 +1,4 @@
+Simple ollama sdk for rust.
+
+See the src/main.rs for example usage.
+
