@@ -3,7 +3,9 @@ name = "ollamars"
 description = "Simple ollama sdk using async rust."
 repository = "https://github.com/Kartofi/ollamars"
 version = "0.1.0"
+license = "MIT OR Apache-2.0"
 edition = "2024"
+readme = "README"
 
 [dependencies]
 async-stream = "0.3.6"
