@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use async_stream::stream;
 use reqwest::{Client, Response, StatusCode};
 
@@ -50,4 +52,17 @@ pub async fn send_streaming_req(
     };
 
     Ok(Box::pin(s))
+}
+
+/// Send GET request
+pub async fn send_get(url: &str) -> Result<String, OllamaError> {
+    let client = reqwest::Client::new();
+
+    let response = client
+        .get(url)
+        .send()
+        .await
+        .map_err(|_| OllamaError::new(&format!("Error while requesting {}!", url)))?;
+
+    Ok(response.text().await.unwrap())
 }

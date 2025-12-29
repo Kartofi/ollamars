@@ -18,6 +18,8 @@ pub mod structs;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut ollama = Ollama::new("http://192.168.0.13:11434").await.unwrap();
 
+    println!("{:?}",ollama.get_models().await);
+
     let history = vec![
         ChatMessage::new(
             ChatRole::System,

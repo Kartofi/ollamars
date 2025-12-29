@@ -2,15 +2,17 @@ use std::sync::mpsc;
 
 use async_stream::stream;
 use futures_util::{Stream, pin_mut};
+use serde_json::Value;
 
 use crate::structs::{
     error::OllamaError,
+    model::Model,
     output_format::OutputFormat,
     request::{ChatMessage, OllamaRequest},
     response::ResponseStreamToken,
 };
 
-use super::http::{check_url, send_streaming_req};
+use super::http::{check_url, send_get, send_streaming_req};
 
 #[derive(Debug)]
 pub struct Ollama {
@@ -30,6 +32,17 @@ impl Ollama {
         Ok(Ollama {
             url: url.to_string(),
         })
+    }
+    pub async fn get_models(&self) -> Result<Vec<Model>, OllamaError> {
+        let json_text = send_get(&format!("{}/api/tags", self.url)).await?;
+
+        let json: Value =
+            serde_json::from_str(&json_text).map_err(|_| OllamaError::new("Invalid JSON!"))?;
+
+        let models: Vec<Model> = serde_json::from_value(json.get("models").unwrap().to_owned())
+            .map_err(|_| OllamaError::new("Invalid JSON!"))?;
+
+        Ok(models)
     }
     pub async fn chat_stream(
         &self,
