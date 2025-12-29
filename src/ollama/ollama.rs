@@ -5,7 +5,8 @@ use futures_util::{Stream, pin_mut};
 
 use crate::structs::{
     error::OllamaError,
-    request::{ChatMessage, OllamaRequest, OutputFormat},
+    output_format::OutputFormat,
+    request::{ChatMessage, OllamaRequest},
     response::ResponseStreamToken,
 };
 
@@ -35,11 +36,12 @@ impl Ollama {
 
         model: &str,
         history: Vec<ChatMessage>,
+
         think: bool,
     ) -> Result<ChatMessageResponseStreamToken, OllamaError> {
         let request = OllamaRequest {
             model: model.to_string(),
-            messages: Some(history),
+            messages: history,
             prompt: None,
             stream: true,
             think,
@@ -89,5 +91,25 @@ impl Ollama {
         };
 
         send_streaming_req(&format!("{}/api/generate", self.url), request).await
+    }
+    pub async fn chat_stream_structure(
+        &self,
+
+        model: &str,
+        history: Vec<ChatMessage>,
+        think: bool,
+
+        output_format: OutputFormat,
+    ) -> Result<ChatMessageResponseStreamToken, OllamaError> {
+        let request = OllamaRequest {
+            model: model.to_string(),
+            messages: history,
+            stream: true,
+            format: Some(output_format),
+            think,
+            ..Default::default()
+        };
+
+        send_streaming_req(&format!("{}/api/chat", self.url), request).await
     }
 }
