@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default,Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum FieldType {
     #[default]
@@ -11,13 +11,13 @@ pub enum FieldType {
     Number,
     Boolean,
 }
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default,Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum FormatType {
     #[default]
     Object
 }
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default,Clone)]
 pub struct FieldTypeInfo {
     #[serde(rename = "type")]
     pub field_type: FieldType,
@@ -31,7 +31,7 @@ pub struct FieldTypeInfo {
     pub enum_int: Option<Vec<i32>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default,Clone)]
 pub struct OutputFormat {
     #[serde(rename = "type")]
     pub output_type: FormatType,

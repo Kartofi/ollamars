@@ -14,7 +14,7 @@ use crate::structs::{
 
 use super::http::{check_url, send_get, send_streaming_req};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Ollama {
     pub url: String,
 }

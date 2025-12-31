@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct Model {
     pub name: String,
     pub size: u64,
@@ -12,7 +12,7 @@ pub struct Model {
     pub expires_at: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct ModelInfo {
     pub family: String,
     pub parameter_size: String,

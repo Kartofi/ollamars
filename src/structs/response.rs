@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::request::ChatMessage;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct Response {
     pub model: String,
     pub created_at: String,
@@ -17,7 +17,7 @@ pub struct Response {
 
     pub done: bool,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct ResponseStreamToken {
     pub model: String,
     pub created_at: String,
