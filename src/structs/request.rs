@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-use super::{output_format::OutputFormat};
+use super::output_format::OutputFormat;
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct OllamaRequest {
@@ -19,8 +19,6 @@ pub struct OllamaRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<OutputFormat>,
 
-
-
     pub stream: bool,
     pub think: bool,
 }
@@ -32,6 +30,9 @@ pub struct ChatMessage {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thinking: Option<String>,
+
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub images: Vec<String>,
 }
 
 impl ChatMessage {
@@ -40,6 +41,15 @@ impl ChatMessage {
             role,
             content: content.to_string(),
             thinking: None,
+            images: Vec::new(),
+        }
+    }
+    pub fn new_with_images(role: ChatRole, content: &str, images: Vec<String>) -> ChatMessage {
+        ChatMessage {
+            role,
+            content: content.to_string(),
+            thinking: None,
+            images,
         }
     }
 }
@@ -49,5 +59,4 @@ pub enum ChatRole {
     User,
     Assistant,
     System,
-
 }

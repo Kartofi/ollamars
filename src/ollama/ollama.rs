@@ -44,6 +44,17 @@ impl Ollama {
 
         Ok(models)
     }
+    pub async fn get_loaded_models(&self) -> Result<Vec<Model>, OllamaError> {
+        let json_text = send_get(&format!("{}/api/ps", self.url)).await?;
+
+        let json: Value =
+            serde_json::from_str(&json_text).map_err(|_| OllamaError::new("Invalid JSON!"))?;
+
+        let models: Vec<Model> = serde_json::from_value(json.get("models").unwrap().to_owned())
+            .map_err(|_| OllamaError::new("Invalid JSON!"))?;
+
+        Ok(models)
+    }
     pub async fn chat_stream(
         &self,
 

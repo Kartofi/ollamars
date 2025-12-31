@@ -15,7 +15,7 @@ pub enum FieldType {
 #[serde(rename_all = "lowercase")]
 pub enum FormatType {
     #[default]
-    Object,
+    Object
 }
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct FieldTypeInfo {
@@ -46,7 +46,7 @@ impl OutputFormat {
     ) -> OutputFormat {
         OutputFormat {
             output_type: FormatType::Object,
-            properties: properties,
+            properties,
             required: required_fields,
         }
     }
