@@ -30,19 +30,18 @@ pub async fn send_streaming_req(
         .body(serde_json::to_string(&body).unwrap())
         .send()
         .await
-        .map_err(|_| OllamaError::new("Error while requesting /api/chat!"))?;
+        .map_err(|_| OllamaError::new(&format!("Error while requesting {}!", url)))?;
 
     let s = stream! {
         while let Some(chunk) = response.chunk().await.map_err(|_| OllamaError::new("Invalid chunk!"))? {
-
             let response_stream_res = serde_json::from_slice::<ResponseStreamToken>(chunk.iter().as_slice());
-
 
             match response_stream_res {
                Ok(response_stream) => {
                    yield Ok(response_stream);
                },
                Err(e) => {
+
                     yield Err(OllamaError::new("Invalid JSON response!"));
                     break;
                 }

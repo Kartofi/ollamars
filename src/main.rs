@@ -46,7 +46,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let output_format = OutputFormat::new(properties, Vec::new());
 
     let mut res = ollama
-        .chat_stream("orieg/gemma3-tools:1b", history, false)
+        .chat_stream("gemma3:1b", history, false)
         .await
         .unwrap();
 

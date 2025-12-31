@@ -31,8 +31,8 @@ pub struct ChatMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thinking: Option<String>,
 
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub images: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
 }
 
 impl ChatMessage {
@@ -41,7 +41,7 @@ impl ChatMessage {
             role,
             content: content.to_string(),
             thinking: None,
-            images: Vec::new(),
+            images: None,
         }
     }
     pub fn new_with_images(role: ChatRole, content: &str, images: Vec<String>) -> ChatMessage {
@@ -49,7 +49,7 @@ impl ChatMessage {
             role,
             content: content.to_string(),
             thinking: None,
-            images,
+            images: Some(images),
         }
     }
 }
