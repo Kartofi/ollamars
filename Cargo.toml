@@ -2,7 +2,7 @@
 name = "ollamars"
 description = "Simple ollama sdk using async rust."
 repository = "https://github.com/Kartofi/ollamars"
-version = "0.1.3"
+version = "0.1.4"
 license = "MIT OR Apache-2.0"
 edition = "2024"
 readme = "README"

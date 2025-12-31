@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use super::output_format::OutputFormat;
 
-#[derive(Serialize, Deserialize, Default,Clone)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct OllamaRequest {
     pub model: String,
 
@@ -23,7 +23,7 @@ pub struct OllamaRequest {
     pub think: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ChatMessage {
     pub role: ChatRole,
     pub content: String,
@@ -53,7 +53,7 @@ impl ChatMessage {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum ChatRole {
     User,
